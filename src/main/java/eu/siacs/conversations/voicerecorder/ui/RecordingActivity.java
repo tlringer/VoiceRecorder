@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.media.MediaRecorder;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -75,9 +76,14 @@ public class RecordingActivity extends Activity implements View.OnClickListener 
 		mRecorder = new MediaRecorder();
 		mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
 		mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-		mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-		mRecorder.setAudioEncodingBitRate(64000);
-
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+			mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.HE_AAC);
+			mRecorder.setAudioEncodingBitRate(48000);
+		} else {
+			mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+			mRecorder.setAudioEncodingBitRate(64000);
+		}
+		mRecorder.setAudioSamplingRate(16000);
 		mOutputFile = getOutputFile();
 		mOutputFile.getParentFile().mkdirs();
 		mRecorder.setOutputFile(mOutputFile.getAbsolutePath());

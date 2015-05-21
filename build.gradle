@@ -24,9 +24,40 @@ android {
         applicationId "eu.siacs.conversations.voicerecorder"
         minSdkVersion 14
         targetSdkVersion 22
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "0.1-beta2"
     }
+
+    if (project.hasProperty('mStoreFile') &&
+            project.hasProperty('mStorePassword') &&
+            project.hasProperty('mKeyAlias') &&
+            project.hasProperty('mKeyPassword')) {
+        signingConfigs {
+            release {
+                storeFile file(mStoreFile)
+                storePassword mStorePassword
+                keyAlias mKeyAlias
+                keyPassword mKeyPassword
+            }
+        }
+        buildTypes.release.signingConfig = signingConfigs.release
+    } else {
+        buildTypes.release.signingConfig = null
+    }
+
+    applicationVariants.all { variant ->
+                if (variant.name.equals('release')) {
+                        variant.outputs.each { output ->
+                                if (output.zipAlign != null) {
+                                        output.zipAlign.outputFile = new File(output.outputFile.parent, rootProject.name + "-${variant.versionName}.apk")
+                                }
+                                output.packageApplication.outputFile = new File(output.outputFile.parent, output.packageApplication.outputFile.name
+                                        .replace(".apk", "-${variant.versionName}.apk"))
+                        }
+                }
+    }
+        
+
     buildTypes {
         release {
             minifyEnabled false
