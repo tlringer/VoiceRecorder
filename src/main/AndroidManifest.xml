@@ -15,8 +15,8 @@
             android:label="@string/voice_recorder"
             android:configChanges="orientation|screenSize">
             <intent-filter>
-                <action android:name="android.provider.MediaStore.RECORD_SOUND" />
-                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
     </application>
