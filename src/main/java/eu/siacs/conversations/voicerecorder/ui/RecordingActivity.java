@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -45,14 +44,13 @@ public class RecordingActivity extends Activity implements View.OnClickListener,
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		this.audioACG = (AudioACG) getFragmentManager().findFragmentById(R.id.audio_acg_fragment_id);
 
-        View acgFrame = findViewById(R.id.acg_frame);
-        acgFrame.setOnClickListener(new View.OnClickListener() {
+        View acgView = findViewById(R.id.audio_acg_button_id);
+        acgView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mStartTime == 0) {
                     mStartTime = SystemClock.elapsedRealtime();
                     mHandler.postDelayed(mTickExecutor, 100);
-                    Log.d("Voice Recorder","started recording to "+mOutputFile.getAbsolutePath());
                 }
             }
         });

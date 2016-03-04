@@ -7,7 +7,6 @@
 
     <application
         android:label="@string/voice_recorder_plugin"
-        android:theme="@style/ConversationsTheme"
         android:icon="@drawable/ic_launcher">
 
         <activity
