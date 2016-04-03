@@ -13,7 +13,6 @@ import com.acg.lib.ACGResourceAccessException;
 import com.acg.lib.impl.AudioACG;
 import com.acg.lib.listeners.ACGActivity;
 import com.acg.lib.listeners.ACGListeners;
-import com.acg.lib.listeners.ResourceReadyListener;
 import eu.siacs.conversations.voicerecorder.R;
 
 import java.io.File;
@@ -43,17 +42,6 @@ public class RecordingActivity extends Activity implements View.OnClickListener,
 		this.mTimerTextView = (TextView) this.findViewById(R.id.timer);
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		this.audioACG = (AudioACG) getFragmentManager().findFragmentById(R.id.audio_acg_fragment_id);
-
-        View acgView = findViewById(R.id.audio_acg_button_id);
-        acgView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mStartTime == 0) {
-                    mStartTime = SystemClock.elapsedRealtime();
-                    mHandler.postDelayed(mTickExecutor, 100);
-                }
-            }
-        });
 	}
 
 	private void tick() {
@@ -80,7 +68,15 @@ public class RecordingActivity extends Activity implements View.OnClickListener,
 
 	@Override
 	public ACGListeners buildACGListeners() {
-		return new ACGListeners.Builder().withResourceReadyListener(audioACG, new ResourceReadyListener() {
+		return new ACGListeners.Builder().withResourceReadyListener(audioACG, new AudioACG.RecorderListener() {
+			@Override
+			public void onRecordStarted() {
+				if (mStartTime == 0) {
+					mStartTime = SystemClock.elapsedRealtime();
+					mHandler.postDelayed(mTickExecutor, 100);
+				}
+			}
+
 			@Override
 			public void onResourceReady() {
 				try {
