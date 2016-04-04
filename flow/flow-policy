@@ -1,5 +1,8 @@
-# Flow policy
+# ACGs
 ACG("audio_recording") -> FILESYSTEM("/ACG")
+
+# Other permissions models
+READ_TIME -> DISPLAY
 
 
 

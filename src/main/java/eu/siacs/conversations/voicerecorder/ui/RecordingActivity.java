@@ -49,7 +49,7 @@ public class RecordingActivity extends Activity implements View.OnClickListener,
 		int minutes = (int) (time / 60000);
 		int seconds = (int) (time / 1000) % 60;
 		int milliseconds = (int) (time / 100) % 10;
-		mTimerTextView.setText(minutes+":"+(seconds < 10 ? "0"+seconds : seconds)+"."+milliseconds);
+        mTimerTextView.setText(minutes+":"+((seconds < 10) ? "0"+seconds : String.valueOf(seconds))+"."+milliseconds);
 	}
 
 	@Override

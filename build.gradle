@@ -96,7 +96,7 @@ dependencies {
 
     if (runSparta) {
         // checkerframework
-        ext.checkerFrameworkVersion = '1.9.12'
+        ext.checkerFrameworkVersion = '1.9.13'
         ext.jdkVersion = 'jdk7'
         checkerFrameworkAnnotatedJDK "org.checkerframework:${jdkVersion}:${checkerFrameworkVersion}"
         checkerFrameworkJavac "org.checkerframework:compiler:${checkerFrameworkVersion}"
@@ -106,7 +106,6 @@ dependencies {
     }
 
     compile fileTree(dir: spartaDir, include: ['*.jar'])
-    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:23.2.0'
     compile group: 'com.google.guava', name: 'guava', version: '18.0'
     compile(name: 'ACG Library-release', ext:'aar')
