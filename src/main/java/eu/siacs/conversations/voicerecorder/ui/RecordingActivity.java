@@ -14,8 +14,12 @@ import com.acg.lib.impl.AudioACG;
 import com.acg.lib.listeners.ACGActivity;
 import com.acg.lib.listeners.ACGListeners;
 import eu.siacs.conversations.voicerecorder.R;
+import sparta.checkers.quals.Sink;
+import sparta.checkers.quals.Source;
 
 import java.io.File;
+
+import static sparta.checkers.quals.FlowPermissionString.DISPLAY;
 
 public class RecordingActivity extends Activity implements View.OnClickListener, ACGActivity {
 
@@ -23,7 +27,7 @@ public class RecordingActivity extends Activity implements View.OnClickListener,
 
 	private TextView mTimerTextView;
 
-	private long mStartTime = 0;
+	private @Sink(DISPLAY) long mStartTime = 0;
 
 	private Handler mHandler = new Handler();
 	private Runnable mTickExecutor = new Runnable() {
@@ -33,7 +37,8 @@ public class RecordingActivity extends Activity implements View.OnClickListener,
 			mHandler.postDelayed(mTickExecutor,100);
 		}
 	};
-	private File mOutputFile;
+
+	private @Source("ACG(audio_recording)") File mOutputFile;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +61,7 @@ public class RecordingActivity extends Activity implements View.OnClickListener,
 	public void onClick(View view) {
 		switch (view.getId()) {
 			case R.id.share_button:
-				Uri uri = Uri.parse("file://"+mOutputFile.getAbsolutePath());
+				Uri uri = (/*@Source("FILESYSTEM(/ACG)")*/ Uri) Uri.parse("file://"+mOutputFile.getAbsolutePath());
 				Intent scanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
 				scanIntent.setData(uri);
 				sendBroadcast(scanIntent);

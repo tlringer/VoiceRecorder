@@ -1,3 +1,5 @@
 # Summary of flows found by the Information Flow Checker
+ ACG("audio_recording") -> FILESYSTEM("/ACG") 
+ FILESYSTEM("/ACG") -> INTENT 
  READ_TIME -> DISPLAY 
 

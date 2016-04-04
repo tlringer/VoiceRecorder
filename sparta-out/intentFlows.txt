@@ -1,0 +1,2 @@
+Component: RecordingActivity.java
+ FILESYSTEM("/ACG") -> INTENT 
