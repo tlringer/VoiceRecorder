@@ -9,11 +9,25 @@ buildscript {
 allprojects {
 	repositories {
 		jcenter()
+        mavenCentral()
 
         flatDir {
             dirs 'libs'
         }
 	}
+}
+
+configurations {
+    checkerFrameworkJavac {
+        description = 'a customization of the Open JDK javac compiler with additional support for type annotations'
+    }
+
+    checkerFrameworkAnnotatedJDK {
+        description = 'a copy of JDK classes with Checker Framework type qualifers inserted'
+    }
+    checkerFramework {
+        description = 'The Checker Framework: custom pluggable types for Java'
+    }
 }
 
 apply plugin: 'com.android.application'
@@ -66,10 +80,54 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    lintOptions {
+        abortOnError false // TODO, also find a way to avoid this
+    }
 }
 
+// By default, don't run SPARTA. To run SPARTA, run ../gradlew compileDebugJavaWithJavac -PrunSparta=true
+def runSparta = project.properties['runSparta'] ?: false
+
 dependencies {
+    // Support both options and env vars
+    def spartaDir = System.env.SPARTA_CODE == null ?
+            System.getProperty("SPARTA_CODE") : "$System.env.SPARTA_CODE"
+
+    if (runSparta) {
+        // checkerframework
+        ext.checkerFrameworkVersion = '1.9.12'
+        ext.jdkVersion = 'jdk7'
+        checkerFrameworkAnnotatedJDK "org.checkerframework:${jdkVersion}:${checkerFrameworkVersion}"
+        checkerFrameworkJavac "org.checkerframework:compiler:${checkerFrameworkVersion}"
+        checkerFramework "org.checkerframework:checker:${checkerFrameworkVersion}"
+        compile "org.checkerframework:checker:${checkerFrameworkVersion}"
+        compile "org.checkerframework:checker-qual:${checkerFrameworkVersion}"
+    }
+
+    compile fileTree(dir: spartaDir, include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:23.2.0'
     compile group: 'com.google.guava', name: 'guava', version: '18.0'
     compile(name: 'ACG Library-release', ext:'aar')
+    compile 'com.google.android.gms:play-services-location:8.4.0' // TODO, eventually should make ACGs into modules so you don't need this
+}
+
+if (runSparta) {
+    allprojects {
+        // SPARTA integration
+        gradle.projectsEvaluated {
+            tasks.withType(JavaCompile).all {
+                options.debug = true
+                options.compilerArgs = [
+                        '-processor', 'sparta.checkers.FlowChecker',
+                        '-AflowPolicy=flow/flow-policy',
+                        '-AprintErrorStack'
+                ]
+                options.bootClasspath = System.getProperty("sun.boot.class.path") + ":" + options.bootClasspath
+                options.fork = true
+                options.forkOptions.jvmArgs += ["-Xbootclasspath/p:${configurations.checkerFrameworkJavac.asPath}"]
+            }
+        }
+    }
 }

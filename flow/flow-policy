@@ -1,7 +1,5 @@
 # Flow policy
 ACG("audio_recording") -> FILESYSTEM("/ACG")
-FILESYSTEM("/ACG") -> ACG("play_audio")
-ACG("audio_recording") -> ACG("play_audio")
 
 
 
